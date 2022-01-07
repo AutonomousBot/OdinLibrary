@@ -1,15 +1,24 @@
 // Declare library array that will store user's books.
 let myLibrary = [];
 
-function Book() {
-  // Constructor
-}
-
+// Add book to library
 function addBookToLibrary() {
   let bookInput = capitalize(prompt("Which book would you like to add?"))
   if (!bookInput == "") {
-    myLibrary.push(bookInput)
+    const author = capitalize(prompt("Enter the author's name."))
+    const pages = prompt("Enter the number of pages.")
+    const read = prompt("Have you read this book?")
+    const bookObject = new Book(bookInput, author, pages, read)
+    myLibrary.push(bookObject)
   }
+}
+
+// Constructor
+function Book(title, author, pages, read) {
+  this.title = title
+  this.author = author
+  this.pages = pages 
+  this.read = read
 }
 
 // Capitalizes title.
