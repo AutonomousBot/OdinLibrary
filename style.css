@@ -18,3 +18,10 @@ body {
 #addBook:hover {
   top: 15px;
 }
+
+#libraryDisplay,
+#bg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
