@@ -1,20 +1,39 @@
 // Declare library array that will store user's books.
 let myLibrary = [new Book("The Hobbit", "J.R.R. Tolkien", 295, "not read"), new Book("eyo", "man", 29, "read"), new Book("John", "Does", 95, "not read")];
 
+// Declare libraryDisplay as a constant.  
+const display = document.getElementById("libraryDisplay")
+
 // Add book to library
 function addBookToLibrary() {
   let bookInput = capitalize(prompt("Which book would you like to add?"))
   // Gets book title.
   if (!bookInput == "") {
     // Asks questions for user to fill known info about the book.
-    const author = capitalize(prompt("Enter the author's name."))
+    const author = capitalize(prompt("Enter the author's name.", "Unknown"))
     const pages = prompt("Enter the number of pages.")
-    const read = prompt("Have you read this book?")
-    const bookObject = new Book(bookInput, author, pages, read)
-    // Book Object is added to myLibrary.
-    myLibrary.push(bookObject)
+    const read = prompt("Have you read this book?", "Not Read")
+    // Check if book already exists.
+    if (checkDuplicateBook(`${bookInput}By${author}`)) {
+      alert("Book is already in library!")
+    }
+    else {
+      const bookObject = new Book(bookInput, author, pages, read)
+      // Book Object is added to myLibrary.
+      myLibrary.push(bookObject)
+    }
+    displayBooks();
   }
 }
+
+// Check if book is already in library
+function checkDuplicateBook(book) {
+  for (let i = 0; i < display.childElementCount; i++) {
+    if (book == display.children[i].id) {
+      return true
+    }
+  }
+} 
 
 // Constructor
 function Book(title, author, pages, read) {
@@ -38,11 +57,12 @@ function capitalize(string) {
 const button = document.getElementById("addBook")
 button.onclick = addBookToLibrary;
 
-// Declare libraryDisplay as a constant.  
-const display = document.getElementById("libraryDisplay")
 // Displays books.
 function displayBooks() {
   for (let i = 0; i < myLibrary.length; i++) {
+    if (checkDuplicateBook(`${myLibrary[i].title}By${myLibrary[i].author}`)) {
+      continue
+    }
     myLibrary[i].prototype = Object.create(Book.prototype)
     myLibrary[i].createBookDisplay();
   }
@@ -69,8 +89,6 @@ Book.prototype.createBookDisplay = function() {
   cardBookTitle.style.top = "30%"
   cardBook.appendChild(cardBookTitle)
 }
-
-displayBooks();
 
 // Side stuff
 // Add conditionals to skip conjunctions/determiner. (make function with array)
