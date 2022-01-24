@@ -1,5 +1,5 @@
 // Declare library array that will store user's books.
-let myLibrary = [new Book("The Hobbit", "J.R.R. Tolkien", 1954, 295, "not read"), new Book("eyo", "man", 1954, 29, "read"), new Book("John", "Does", 1954, 95, "not read")];
+let myLibrary = [];
 
 // Declare libraryDisplay as a constant.  
 const display = document.getElementById("libraryDisplay")
@@ -13,7 +13,7 @@ function addBookToLibrary() {
     const author = capitalize(prompt("Enter the author's name.", "Unknown"))
     const year = prompt("Enter the year of publication.")
     const pages = prompt("Enter the number of pages.")
-    const read = prompt("Have you read this book?", "Not Read")
+    const read = (prompt("Have you read this book?", "Not Read"))
     // Check if book already exists.
     if (checkDuplicateBook(`${bookInput}${year}`)) {
       alert("Book is already in library!")
@@ -93,6 +93,24 @@ Book.prototype.createBookDisplay = function() {
   cardBookTitle.style.left = "30%"
   cardBookTitle.style.top = "30%"
   cardBook.appendChild(cardBookTitle);
+
+  // Adds button that toggles the read status of the book.
+  const readButton = document.createElement("button")
+  readButton.textContent = this.read
+  // Toggles read status.
+  function toggleRead() {
+    let readStatus = myLibrary[this.parentElement.getAttribute("libraryindex")].read;
+    capitalize(readStatus) != "Not Read"? readStatus = "Not Read" : readStatus = "Read"
+    myLibrary[this.parentElement.getAttribute("libraryindex")].read = readStatus
+    readButton.textContent = readStatus
+  }
+  // Adds on click event to button
+  readButton.addEventListener("click", toggleRead)
+  // Appends created button to book display div and sets position
+  readButton.style.position = "absolute"
+  readButton.style.left = "33%"
+  readButton.style.bottom = "20%"
+  cardBook.appendChild(readButton);
 }
 
 // Adds button to remove book from library
