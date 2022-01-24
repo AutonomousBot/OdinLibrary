@@ -1,5 +1,5 @@
 // Declare library array that will store user's books.
-let myLibrary = [new Book("The Hobbit", "J.R.R. Tolkien", 295, "not read"), new Book("eyo", "man", 29, "read"), new Book("John", "Does", 95, "not read")];
+let myLibrary = [new Book("The Hobbit", "J.R.R. Tolkien", 1954, 295, "not read"), new Book("eyo", "man", 1954, 29, "read"), new Book("John", "Does", 1954, 95, "not read")];
 
 // Declare libraryDisplay as a constant.  
 const display = document.getElementById("libraryDisplay")
@@ -11,14 +11,15 @@ function addBookToLibrary() {
   if (!bookInput == "") {
     // Asks questions for user to fill known info about the book.
     const author = capitalize(prompt("Enter the author's name.", "Unknown"))
+    const year = prompt("Enter the year of publication.")
     const pages = prompt("Enter the number of pages.")
     const read = prompt("Have you read this book?", "Not Read")
     // Check if book already exists.
-    if (checkDuplicateBook(`${bookInput}By${author}`)) {
+    if (checkDuplicateBook(`${bookInput}${year}`)) {
       alert("Book is already in library!")
     }
     else {
-      const bookObject = new Book(bookInput, author, pages, read)
+      const bookObject = new Book(bookInput, author, year, pages, read)
       // Book Object is added to myLibrary.
       myLibrary.push(bookObject)
     }
@@ -35,10 +36,11 @@ function checkDuplicateBook(book) {
   }
 } 
 
-// Constructor
-function Book(title, author, pages, read) {
+// Constructor for book.
+function Book(title, author, year, pages, read) {
   this.title = title
   this.author = author
+  this.year = year
   this.pages = pages 
   this.read = read
 }
@@ -60,7 +62,7 @@ button.onclick = addBookToLibrary;
 // Displays books.
 function displayBooks() {
   for (let i = 0; i < myLibrary.length; i++) {
-    if (checkDuplicateBook(`${myLibrary[i].title}By${myLibrary[i].author}`)) {
+    if (checkDuplicateBook(`${myLibrary[i].title}${myLibrary[i].year}`)) {
       continue
     }
     myLibrary[i].prototype = Object.create(Book.prototype)
@@ -72,22 +74,54 @@ function displayBooks() {
 Book.prototype.createBookDisplay = function() {
   // Creates a div for new books.
   const cardBook = document.createElement("div");
-  cardBook.setAttribute("id", `${this.title}By${this.author}`);
+  cardBook.setAttribute("id", `${this.title}${this.year}`);
   cardBook.style.position = "relative"
   cardBook.setAttribute("text-align", "center")
+  cardBook.setAttribute("libraryindex", `${myLibrary.indexOf(this)}`)
   display.appendChild(cardBook);
+
   // Creates image inside book div.
   const cardBookImg = document.createElement("img")
   cardBookImg.setAttribute("src", "images/LibraryBook.png");
   cardBookImg.setAttribute("alt", "Card template edited from Slay the Spire.");
   cardBook.appendChild(cardBookImg)
+
   // Adds title of book to div.
   const cardBookTitle = document.createElement("div")
   cardBookTitle.textContent = `${this.title}`
   cardBookTitle.style.position = "absolute"
   cardBookTitle.style.left = "30%"
   cardBookTitle.style.top = "30%"
-  cardBook.appendChild(cardBookTitle)
+  cardBook.appendChild(cardBookTitle);
+}
+
+// Adds button to remove book from library
+Book.prototype.removeBookButton = function() {
+  const domBook = document.getElementById(`${this.title}${this.year}`)
+  domBook.addEventListener("click", removeLibrary, false)
+}
+
+// Removes book from library
+function removeLibrary() {
+  console.log(this)
+  console.log(typeof(this))
+  // Removes book from the library.
+  myLibrary.splice(this.getAttribute("libraryindex"), 1);
+  // Removes DOM element of the book.
+  this.remove();
+  // Removes click event after a book has been removed.
+  for (let i = 0; i < display.childElementCount; i++) {
+    document.getElementById(display.children[i].id).removeEventListener("click", removeLibrary, false)
+  }
+}
+// Solution attempt: 'this' will be document.get...(element that was clicked). add attribute to element: libraryindex.
+
+// Adds click event to bookRemoval image.
+const bookRemoval = document.getElementById("bookRemoval")
+bookRemoval.onclick = function() {
+  for (let i = 0; i < myLibrary.length; i++) {
+    myLibrary[i].removeBookButton();
+  }
 }
 
 // Side stuff
