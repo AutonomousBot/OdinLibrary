@@ -143,4 +143,5 @@ bookRemoval.onclick = function() {
 }
 
 // Side stuff
-// Add conditionals to skip conjunctions/determiner. (make function with array)
+// Add conditionals to skip conjunctions/determiners. (make function with array)
+// Add border colors/ button on click effects for users to see they buttons they've clicked/ are clicking. 
