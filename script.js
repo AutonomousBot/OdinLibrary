@@ -11,7 +11,7 @@ function addBookToLibrary() {
   if (!bookInput == "") {
     // Asks questions for user to fill known info about the book.
     const author = capitalize(prompt("Enter the author's name.", "Unknown"))
-    const year = prompt("Enter the year of publication.")
+    const year = prompt("Enter the year of publication.", "Unknown")
     const pages = prompt("Enter the number of pages.")
     const read = (prompt("Have you read this book?", "Not Read"))
     // Check if book already exists.
@@ -27,6 +27,65 @@ function addBookToLibrary() {
   }
 }
 
+// Class version of book objects instead of constructor.
+class Book {
+  constructor(title, author, year, pages, read) {
+    this.title = title
+    this.author = author
+    this.year = year
+    this.pages = pages 
+    this.read = read
+  }
+
+  // Create displayed book.
+  createBookDisplay() {
+    // Creates a div for new books.
+    const cardBook = document.createElement("div");
+    cardBook.setAttribute("id", `${this.title}${this.year}`);
+    cardBook.style.position = "relative"
+    cardBook.setAttribute("text-align", "center")
+    cardBook.setAttribute("libraryindex", `${myLibrary.indexOf(this)}`)
+    display.appendChild(cardBook);
+  
+    // Creates image inside book div.
+    const cardBookImg = document.createElement("img")
+    cardBookImg.setAttribute("src", "images/LibraryBook.png");
+    cardBookImg.setAttribute("alt", "Card template edited from Slay the Spire.");
+    cardBook.appendChild(cardBookImg)
+  
+    // Adds title of book to div.
+    const cardBookTitle = document.createElement("div")
+    cardBookTitle.textContent = `${this.title}`
+    cardBookTitle.style.position = "absolute"
+    cardBookTitle.style.left = "30%"
+    cardBookTitle.style.top = "30%"
+    cardBook.appendChild(cardBookTitle);
+  
+    // Adds button that toggles the read status of the book.
+    const readButton = document.createElement("button")
+    readButton.textContent = this.read
+    // Toggles read status.
+    function toggleRead() {
+      let readStatus = myLibrary[this.parentElement.getAttribute("libraryindex")].read;
+      capitalize(readStatus) != "Not Read"? readStatus = "Not Read" : readStatus = "Read"
+      myLibrary[this.parentElement.getAttribute("libraryindex")].read = readStatus
+      readButton.textContent = readStatus
+    }
+    // Adds on click event to button
+    readButton.addEventListener("click", toggleRead)
+    // Appends created button to book display div and sets position
+    readButton.style.position = "absolute"
+    readButton.style.left = "33%"
+    readButton.style.bottom = "20%"
+    cardBook.appendChild(readButton);
+  }
+
+  removeBookButton() {
+    const domBook = document.getElementById(`${this.title}${this.year}`)
+    domBook.addEventListener("click", removeLibrary, false)
+  }
+}
+
 // Check if book is already in library
 function checkDuplicateBook(book) {
   for (let i = 0; i < display.childElementCount; i++) {
@@ -36,14 +95,14 @@ function checkDuplicateBook(book) {
   }
 } 
 
-// Constructor for book.
-function Book(title, author, year, pages, read) {
-  this.title = title
-  this.author = author
-  this.year = year
-  this.pages = pages 
-  this.read = read
-}
+// // Constructor for book.
+// function Book(title, author, year, pages, read) {
+//   this.title = title
+//   this.author = author
+//   this.year = year
+//   this.pages = pages 
+//   this.read = read
+// }
 
 // Capitalizes title.
 function capitalize(string) {
@@ -65,59 +124,59 @@ function displayBooks() {
     if (checkDuplicateBook(`${myLibrary[i].title}${myLibrary[i].year}`)) {
       continue
     }
-    myLibrary[i].prototype = Object.create(Book.prototype)
+    // myLibrary[i].prototype = Object.create(Book.prototype)
     myLibrary[i].createBookDisplay();
   }
 }
 
-// Create displayed book.
-Book.prototype.createBookDisplay = function() {
-  // Creates a div for new books.
-  const cardBook = document.createElement("div");
-  cardBook.setAttribute("id", `${this.title}${this.year}`);
-  cardBook.style.position = "relative"
-  cardBook.setAttribute("text-align", "center")
-  cardBook.setAttribute("libraryindex", `${myLibrary.indexOf(this)}`)
-  display.appendChild(cardBook);
+// // Create displayed book.
+// Book.prototype.createBookDisplay = function() {
+//   // Creates a div for new books.
+//   const cardBook = document.createElement("div");
+//   cardBook.setAttribute("id", `${this.title}${this.year}`);
+//   cardBook.style.position = "relative"
+//   cardBook.setAttribute("text-align", "center")
+//   cardBook.setAttribute("libraryindex", `${myLibrary.indexOf(this)}`)
+//   display.appendChild(cardBook);
 
-  // Creates image inside book div.
-  const cardBookImg = document.createElement("img")
-  cardBookImg.setAttribute("src", "images/LibraryBook.png");
-  cardBookImg.setAttribute("alt", "Card template edited from Slay the Spire.");
-  cardBook.appendChild(cardBookImg)
+//   // Creates image inside book div.
+//   const cardBookImg = document.createElement("img")
+//   cardBookImg.setAttribute("src", "images/LibraryBook.png");
+//   cardBookImg.setAttribute("alt", "Card template edited from Slay the Spire.");
+//   cardBook.appendChild(cardBookImg)
 
-  // Adds title of book to div.
-  const cardBookTitle = document.createElement("div")
-  cardBookTitle.textContent = `${this.title}`
-  cardBookTitle.style.position = "absolute"
-  cardBookTitle.style.left = "30%"
-  cardBookTitle.style.top = "30%"
-  cardBook.appendChild(cardBookTitle);
+//   // Adds title of book to div.
+//   const cardBookTitle = document.createElement("div")
+//   cardBookTitle.textContent = `${this.title}`
+//   cardBookTitle.style.position = "absolute"
+//   cardBookTitle.style.left = "30%"
+//   cardBookTitle.style.top = "30%"
+//   cardBook.appendChild(cardBookTitle);
 
-  // Adds button that toggles the read status of the book.
-  const readButton = document.createElement("button")
-  readButton.textContent = this.read
-  // Toggles read status.
-  function toggleRead() {
-    let readStatus = myLibrary[this.parentElement.getAttribute("libraryindex")].read;
-    capitalize(readStatus) != "Not Read"? readStatus = "Not Read" : readStatus = "Read"
-    myLibrary[this.parentElement.getAttribute("libraryindex")].read = readStatus
-    readButton.textContent = readStatus
-  }
-  // Adds on click event to button
-  readButton.addEventListener("click", toggleRead)
-  // Appends created button to book display div and sets position
-  readButton.style.position = "absolute"
-  readButton.style.left = "33%"
-  readButton.style.bottom = "20%"
-  cardBook.appendChild(readButton);
-}
+//   // Adds button that toggles the read status of the book.
+//   const readButton = document.createElement("button")
+//   readButton.textContent = this.read
+//   // Toggles read status.
+//   function toggleRead() {
+//     let readStatus = myLibrary[this.parentElement.getAttribute("libraryindex")].read;
+//     capitalize(readStatus) != "Not Read"? readStatus = "Not Read" : readStatus = "Read"
+//     myLibrary[this.parentElement.getAttribute("libraryindex")].read = readStatus
+//     readButton.textContent = readStatus
+//   }
+//   // Adds on click event to button
+//   readButton.addEventListener("click", toggleRead)
+//   // Appends created button to book display div and sets position
+//   readButton.style.position = "absolute"
+//   readButton.style.left = "33%"
+//   readButton.style.bottom = "20%"
+//   cardBook.appendChild(readButton);
+// }
 
-// Adds button to remove book from library
-Book.prototype.removeBookButton = function() {
-  const domBook = document.getElementById(`${this.title}${this.year}`)
-  domBook.addEventListener("click", removeLibrary, false)
-}
+// // Adds button to remove book from library
+// Book.prototype.removeBookButton = function() {
+//   const domBook = document.getElementById(`${this.title}${this.year}`)
+//   domBook.addEventListener("click", removeLibrary, false)
+// }
 
 // Removes book from library
 function removeLibrary() {
